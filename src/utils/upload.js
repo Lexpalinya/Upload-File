@@ -12,7 +12,7 @@ import crypto from "crypto";
 import { calculateETag } from "./calculateETag.js";
 
 dotenv.config();
-const AWS_BUCKET = process.env.BUCKET_NAME;
+export const AWS_BUCKET = "sabaidevtest";
 
 export const s3 = new S3Client({
   region: process.env.REGION,
@@ -184,7 +184,7 @@ const deleteFile = async (fileKey) => {
   try {
     const result = await s3.send(
       new DeleteObjectCommand({
-        Bucket: process.env.BUCKET_NAME, // ✅ ชื่อ Bucket
+        Bucket: AWS_BUCKET, // ✅ ชื่อ Bucket
         Key: fileKey, // ✅ ชื่อไฟล์ที่ต้องการลบ
       })
     );

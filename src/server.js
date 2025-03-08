@@ -3,7 +3,7 @@ import express from "express";
 import dotenv from "dotenv";
 
 import { upload } from "./config/multer.config.js";
-import { s3, uploadToS3 } from "./utils/upload.js";
+import { AWS_BUCKET, s3, uploadToS3 } from "./utils/upload.js";
 import { GetObjectCommand, ListBucketsCommand } from "@aws-sdk/client-s3";
 
 dotenv.config();
@@ -44,7 +44,7 @@ app.get("/download/:fileName", async (req, res) => {
   const { fileName } = req.params;
 
   const getObjectCommand = new GetObjectCommand({
-    Bucket: process.env.BUCKET_NAME,
+    Bucket: AWS_BUCKET,
     Key: fileName,
   });
 
