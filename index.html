@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>File Upload Test</title>
+  </head>
+  <body>
+    <h2>Upload File</h2>
+    <input type="file" id="fileInput" multiple />
+    <button onclick="uploadFile()">Upload</button>
+    <p id="uploadStatus"></p>
+
+    <h2>Download File</h2>
+    <input type="text" id="fileName" placeholder="Enter file name" />
+    <button onclick="downloadFile()">Download</button>
+    <p id="downloadStatus"></p>
+
+    <script>
+      async function uploadFile() {
+        const fileInput = document.getElementById("fileInput");
+        const uploadStatus = document.getElementById("uploadStatus");
+        if (fileInput.files.length === 0) {
+          uploadStatus.textContent = "Please select a file to upload.";
+          return;
+        }
+
+        const formData = new FormData();
+        for (let file of fileInput.files) {
+          formData.append("files", file);
+        }
+
+        try {
+          const response = await fetch("http://localhost:3009/upload", {
+            method: "POST",
+            body: formData,
+          });
+          const result = await response.json();
+          if (response.ok) {
+            uploadStatus.textContent = "Upload successful!";
+          } else {
+            uploadStatus.textContent = "Upload failed: " + result.message;
+          }
+        } catch (error) {
+          uploadStatus.textContent = "Error uploading file: " + error.message;
+        }
+      }
+
+      async function downloadFile() {
+        const fileName = document.getElementById("fileName").value;
+        const downloadStatus = document.getElementById("downloadStatus");
+        if (!fileName) {
+          downloadStatus.textContent = "Please enter a file name.";
+          return;
+        }
+
+        try {
+          const response = await fetch(`http://localhost:3009/download/${fileName}`);
+          if (!response.ok) {
+            throw new Error("File not found or download error");
+          }
+
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          downloadStatus.textContent = "Download started.";
+        } catch (error) {
+          downloadStatus.textContent =
+            "Error downloading file: " + error.message;
+        }
+      }
+    </script>
+  </body>
+</html>

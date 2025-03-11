@@ -9,7 +9,7 @@ import { GetObjectCommand, ListBucketsCommand } from "@aws-sdk/client-s3";
 dotenv.config();
 
 export const app = express();
-const port = 3000;
+const port = 3009;
 
 app.use(express.json({ limit: "25gb" }));
 app.use((req, res, next) => {

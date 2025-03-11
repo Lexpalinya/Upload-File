@@ -10,7 +10,7 @@ import dotenv from "dotenv";
 import path from "path";
 import crypto from "crypto";
 import { calculateETag } from "./calculateETag.js";
-
+import { NodeHttpHandler } from "@smithy/node-http-handler";
 dotenv.config();
 export const AWS_BUCKET = "sabaidevtest";
 
@@ -23,6 +23,11 @@ export const s3 = new S3Client({
   },
   forcePathStyle: true,
   disableHostPrefix: true,
+  requestHandler: new NodeHttpHandler({
+    maxSockets: 100,
+    connectionTimeout:1000000,
+    socketAcquisitionWarningTimeout:10000000
+  }),
 });
 
 // Upload files using Multipart Upload
